@@ -1,5 +1,4 @@
 const fs = require("fs");
-
 class ProductManager {
     constructor (path) {
         this.path = path;
@@ -17,8 +16,7 @@ class ProductManager {
     async addProduct(data) {
         const { title, description, price, thumbnail, code, stock } = data;
         if (!title || !description || !price || !thumbnail || !code || !stock) {
-            console.error("Todos los campos son obligatorios ⚠️");
-            return;}
+            throw new Error("Todos los campos son obligatorios ⚠️");}
 
     const newProduct = {
         id: ++this.id,
@@ -36,17 +34,32 @@ class ProductManager {
 
     async get() {return this.getProducts();}
     
-    updateProduct(id, data) {
+    async updateProduct(id, data) {
         const { title, description, price, thumbnail, code, stock } = data;
-        const products = addProduct(this.path);
-        const product = products.find((p) => p.id === id);
-        if(!product){
-            console.error("Producto no encontrado ⛔");}}}
+        const products = await this.getProducts();
+        const index = products.findIndex((p) => p.id === id);
+        if(index === -1){
+            throw new Error("Producto no encontrado ⛔");}
+        if (title){products[index].title = title;}
+        if (description){products[index].description = description;}
+        if (price){products[index].price = price;}
+        if (thumbnail){products[index].thumbnail = thumbnail;}
+        if (code){products[index].code = code;}
+        if (stock){products[index].stock = stock;}
+        await this.saveProducts(products);
+        console.log("El Producto se actualizo correctamente ♻️");}
+    
+    async deleteProduct(id) {
+        const products = await this.getProducts();
+        const index = products.findIndex((p) => p.id === id);
+        if (index === -1) {
+            throw new Error("Producto no encontrado ⛔");}
+        products.splice(index, 1);
+        await this.saveProducts(products);
+        console.log("El Producto se eliminó correctamente ⛔");}}
+    
 
-
-
-
-
+/*TESTING*/
 async function test() {
     const product_manager = new ProductManager("Product.json");
     const data = {
@@ -57,9 +70,11 @@ async function test() {
         code: "NEGRO",
         stock: 20};
     await product_manager.addProduct(data);
+    console.log(await product_manager.get());
+    await product_manager.updateProduct(1, {code: "ROSA", thumbnail: "../img/4A.png" });
+    console.log(await product_manager.get());
+    await product_manager.deleteProduct(1);
     console.log(await product_manager.get());}
-
 test();
-
 
 //node Js/ProductManager.js
