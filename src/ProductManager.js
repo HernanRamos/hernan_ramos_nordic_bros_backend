@@ -64,4 +64,3 @@ class ProductManager {
         return JSON.parse(data);}}
 
 module.exports = ProductManager;
-    

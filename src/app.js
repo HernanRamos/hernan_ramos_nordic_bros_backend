@@ -28,6 +28,3 @@ app.get("/products/:productId", async (req,res) => {
 
         
 app.listen(8080, () => {console.log("SERVIDOR FUCIONANDO ✅");})
-
-
-
