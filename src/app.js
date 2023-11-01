@@ -4,7 +4,8 @@ const app = express();
 const productManager = new ProductManager();
 
 
-app.get("/", async (req,res) => {res.json("⚔️ BIENVENIDO A NORDIC BROS ⚔️")})
+app.get("/", async (req,res) => {
+    res.json("⚔️ BIENVENIDO A NORDIC BROS ⚔️")})
 
     
 app.get("/products", async (req,res) => {
@@ -13,8 +14,8 @@ app.get("/products", async (req,res) => {
     if (limit) {
         const limited_products = [];
         for (let i = 0; i < limit && i < products.length; i++) {limited_products.push(products[i]);}
-        res.send(limited_products.map(JSON.stringify).join('\n'));}
-        else {res.send(products.map(JSON.stringify).join('\n'));}});
+        res.json(limited_products);}
+        else {res.json(products);}});
 
 
 app.get("/products/:productId", async (req,res) => {
@@ -24,7 +25,7 @@ app.get("/products/:productId", async (req,res) => {
     if (product) {res.send({ product });}
     else{res.json({ error: "⛔ PRODUCTO NO ENCONTRADO ⛔" });}})
 
+    
+    
 
-
-        
 app.listen(8080, () => {console.log("SERVIDOR FUCIONANDO ✅");})
