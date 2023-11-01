@@ -2,7 +2,7 @@ const fs = require("fs").promises;
 
 class ProductManager {
     constructor (path) {
-        this.path = "../data/products.json";
+        this.path = "./data/products.json";
         this.id = 0;}
 
     async getProducts() {
