@@ -1,13 +1,13 @@
-const fs = require("fs");
+const fs = require("fs").promises;
 
 class ProductManager {
     constructor (path) {
-        this.path = path;
+        this.path = "../data/products.json";
         this.id = 0;}
 
     async getProducts() {
         if (!fs.existsSync(this.path)) return [];
-        const content = await fs.promises.readFile(this.path, "utf-8");
+        const content = await fs.readFile(this.path, "utf-8");
         return JSON.parse(content);}
 
     async saveProducts(data) {
@@ -19,7 +19,7 @@ class ProductManager {
         if (!title || !description || !price || !thumbnail || !code || !stock) {
             throw new Error("Todos los campos son obligatorios ⚠️");}
 
-    const newProduct = {
+    const new_product = {
         id: ++this.id,
         title,
         description,
@@ -28,7 +28,7 @@ class ProductManager {
         code,
         stock};
     const products = await this.getProducts();
-    products.push(newProduct);
+    products.push(new_product);
 
     await this.saveProducts(products);
     console.log("El Producto se agrego correctamente ✅");}
@@ -57,26 +57,11 @@ class ProductManager {
             throw new Error("Producto no encontrado ⛔");}
         products.splice(index, 1);
         await this.saveProducts(products);
-        console.log("El Producto se eliminó correctamente ⛔");}}
-    
+        console.log("El Producto se eliminó correctamente ⛔");}
+        
+    async readProducts() {
+        const data = await fs.readFile(this.path, 'utf-8');
+        return JSON.parse(data);}}
 
-/*TESTING*/
-async function test() {
-    const product_manager = new ProductManager("Product.json");
-    const data = {
-        title: "BIDON BLACK",
-        description: "Capacidad de 1.6L",
-        price: 4500,
-        thumbnail: "../img/1A.png",
-        code: "NEGRO",
-        stock: 20};
-    await product_manager.addProduct(data);
-    console.log(await product_manager.get());
-    await product_manager.updateProduct(1, {code: "ROSA", thumbnail: "../img/4A.png" });
-    console.log(await product_manager.get());
-    await product_manager.deleteProduct(1);
-    console.log(await product_manager.get());}
-test();
-
-//node Js/ProductManager.js
+module.exports = ProductManager;
 
